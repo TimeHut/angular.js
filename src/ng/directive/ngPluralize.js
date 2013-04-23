@@ -200,7 +200,7 @@ var ngPluralizeDirective = ['$locale', '$interpolate', function($locale, $interp
           return '';
         }
       }, function ngPluralizeWatchAction(newVal) {
-        element.text(newVal);
+          if (newVal)  element.text(newVal);
       });
     }
   };

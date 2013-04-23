@@ -387,11 +387,27 @@ angular.module('ngResource', ['ng']).
           }
 
           var value = this instanceof Resource ? this : (action.isArray ? [] : new Resource(data));
+          /*
           $http({
             method: action.method,
             url: route.url(extend({}, extractParams(data, action.params || {}), params)),
             data: data
           }).then(function(response) {
+              */
+
+           // add $Http config support
+           // refer to https://github.com/angular/angular.js/commit/af89daf4641f57b92be6c1f3635f5a3237f20c71
+          var httpConfig = {};
+
+          forEach(action, function(value, key) {
+              if (key != 'params' && key != 'isArray' ) {
+                  httpConfig[key] = copy(value);
+              }
+          });
+          httpConfig.data = data;
+          httpConfig.url = route.url(extend({}, extractParams(data, action.params || {}), params))
+
+          $http(httpConfig).then(function(response) {
               var data = response.data;
 
               if (data) {

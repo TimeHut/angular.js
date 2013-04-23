@@ -737,11 +737,11 @@ forEach({
 
   triggerHandler: function(element, eventName) {
     var eventFns = (JQLiteExpandoStore(element, 'events') || {})[eventName];
-
+    var args = arguments[2];
     forEach(eventFns, function(fn) {
-      fn.call(element, null);
+        fn.call(element, args);
     });
-  }
+}
 }, function(fn, name){
   /**
    * chaining functions

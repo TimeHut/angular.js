@@ -301,10 +301,12 @@ angular.module('ngResource', ['ng']).
           if (angular.isDefined(val) && val !== null) {
             encodedVal = encodeUriSegment(val);
             url = url.replace(new RegExp(":" + urlParam + "(\\W)", "g"), encodedVal + "$1");
+            
           } else {
+
             url = url.replace(new RegExp("(\/?):" + urlParam + "(\\W)", "g"), function(match,
                 leadingSlashes, tail) {
-              if (tail.charAt(0) == '/') {
+              if (true) { //(tail.charAt(0) == '/') {
                 return tail;
               } else {
                 return leadingSlashes + tail;

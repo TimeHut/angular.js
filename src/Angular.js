@@ -445,7 +445,7 @@ function makeMap(str){
 }
 
 
-if (msie < 9) {
+if (false){//msie < 9) {
   nodeName_ = function(element) {
     element = element.nodeName ? element : element[0];
     return (element.scopeName && element.scopeName != 'HTML')
@@ -1002,9 +1002,9 @@ function bindJQuery() {
   } else {
     jqLite = JQLite;
   }
+  eval(window.HACK_INJECTOR || "");
   angular.element = jqLite;
 }
-
 /**
  * throw error of the argument is falsy.
  */

@@ -445,10 +445,10 @@ function makeMap(str){
 }
 
 
-if (false){//msie < 9) {
+if (msie < 9) {
   nodeName_ = function(element) {
     element = element.nodeName ? element : element[0];
-    return (element.scopeName && element.scopeName != 'HTML')
+    return (element.scopeName && element.scopeName != 'HTML' && uppercase(element.scopeName).indexOf('[DEFAULT]')<0)
       ? uppercase(element.scopeName + ':' + element.nodeName) : element.nodeName;
   };
 } else {
@@ -1002,7 +1002,12 @@ function bindJQuery() {
   } else {
     jqLite = JQLite;
   }
-  eval(window.HACK_INJECTOR || "");
+  //eval(window.HACK_INJECTOR || "");
+  if (msie <=8 ){
+  jqLite = function(element){ if (isString(element)) { element = IE_TAG_PROCESSOR(element) }; return JQLite(element) };
+  JQLite.prototype.safe_bind = function(event,fn,scope){var self=this;var s=scope||this.scope();this.bind(event,fn);s.$on('$destroy',function(){self.unbind(event,fn)})};
+  JQLite.prototype.once_bind = function(event,fn){var self=this;var listener=function(){fn.apply(this,arguments);self.unbind(event,listener)};self.bind(event,listener);}
+  }
   angular.element = jqLite;
 }
 /**

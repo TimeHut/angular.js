@@ -866,7 +866,7 @@ function $CompileProvider($provide) {
         }
 
         // RECURSION
-        childLinkFn && linkNode.nodeType != 3 && childLinkFn(scope, linkNode.childNodes, undefined, boundTranscludeFn);
+        childLinkFn && childLinkFn(scope, linkNode.childNodes, undefined, boundTranscludeFn);
 
         // POSTLINKING
         for(i = 0, ii = postLinkFns.length; i < ii; i++) {

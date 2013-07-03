@@ -75,7 +75,7 @@ var ngSwitchDirective = valueFn({
         selectedElement,
         selectedScope;
 
-    scope.$watch(watchExpr, function ngSwitchWatchAction(value) {
+    var unbind = scope.$watch(watchExpr, function ngSwitchWatchAction(value) {
       if (selectedElement) {
         selectedScope.$destroy();
         selectedElement.remove();
@@ -88,6 +88,11 @@ var ngSwitchDirective = valueFn({
           selectedElement = caseElement;
           element.append(caseElement);
         });
+        if (attr.$attr['once']){
+            unbind();
+            ctrl.cases = null;
+            //console.log('..ngswitch once')
+        }
       }
     });
   }

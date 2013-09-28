@@ -91,10 +91,15 @@ var ngSwitchDirective = valueFn({
         if (attr.$attr['once']){
             unbind();
             ctrl.cases = null;
-            //console.log('..ngswitch once')
         }
       }
-    });
+  	});
+	/*
+    scope.$on('$destroy', function(){
+        ctrl.cases = null;
+        unbind();
+	})
+	*/
   }
 });
 

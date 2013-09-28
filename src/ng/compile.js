@@ -1050,17 +1050,43 @@ function $CompileProvider($provide) {
 
 
     function addTextInterpolateDirective(directives, text) {
-      var interpolateFn = $interpolate(text, true);
+        var is_temp = true;
+        if (text.indexOf('[[') >= 0){
+            is_temp = false;
+            text = text.replace('[[', '{{').replace(']]', '}}')
+        }
+        var interpolateFn = $interpolate(text, true);
       if (interpolateFn) {
         directives.push({
           priority: 0,
           compile: valueFn(function textInterpolateLinkFn(scope, node) {
-            var parent = node.parent(),
-                bindings = parent.data('$binding') || [];
-            bindings.push(interpolateFn);
-            safeAddClass(parent.data('$binding', bindings), 'ng-binding');
-            scope.$watch(interpolateFn, function interpolateFnWatchAction(value) {
-              node[0].nodeValue = value;
+              if (!is_temp){
+                  var parent = node.parent(),
+                  bindings = parent.data('$binding') || [];
+                  bindings.push(interpolateFn);
+                  safeAddClass(parent.data('$binding', bindings), 'ng-binding');
+              }
+            var first = true;
+            var unbind = scope.$watch(interpolateFn, function interpolateFnWatchAction(value) {
+                // textarea placeholder
+               node[0].nodeValue && (node[0].nodeValue = value);
+                
+               /*
+              if (value && !first){
+                  console.log('aha, second', value)
+                  unbind();
+              }
+              */
+              is_temp && first && setTimeout(function(){
+                  if (value) {
+                    //console.log("enhen??", text, value, value.length)
+                      unbind();
+                  }
+                  else{
+                    first = true;
+                  }
+              }, 3000)
+              if (!is_temp)first = false;
             });
           })
         });
@@ -1069,6 +1095,11 @@ function $CompileProvider($provide) {
 
 
     function addAttrInterpolateDirective(node, directives, value, name) {
+        var is_temp = true;
+        if (value.indexOf('[[') >= 0){
+            is_temp = false;
+            value = value.replace('[[', '{{').replace(']]', '}}')
+        }
       var interpolateFn = $interpolate(value, true);
 
       // no interpolation found -> ignore
@@ -1083,14 +1114,25 @@ function $CompileProvider($provide) {
           if (name === 'class') {
             // we need to interpolate classes again, in the case the element was replaced
             // and therefore the two class attrs got merged - we want to interpolate the result
-            interpolateFn = $interpolate(attr[name], true);
+            interpolateFn = $interpolate(attr[name].replace('[[', '{{').replace(']]', '}}'), true);
           }
 
           attr[name] = undefined;
+          var first = true;
           ($$observers[name] || ($$observers[name] = [])).$$inter = true;
-          (attr.$$observers && attr.$$observers[name].$$scope || scope).
+          var unbind = (attr.$$observers && attr.$$observers[name].$$scope || scope).
             $watch(interpolateFn, function interpolateFnWatchAction(value) {
-              attr.$set(name, value);
+                attr.$set(name, value);
+                is_temp && first && setTimeout(function(){
+                    //console.log("enhen??", text, value)
+                    if (value) {
+                        unbind();
+                    }
+                    else{
+                        first = true;
+                    } 
+                }, 3000)
+               	if (!is_temp) first = false; 
             });
         })
       });

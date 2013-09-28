@@ -88,8 +88,15 @@ var ngRepeatDirective = ngDirective({
       // We need an array of these objects since the same object can be returned from the iterator.
       // We expect this to be a rare case.
       var lastOrder = new HashQueueMap();
+      scope.$on('$destroy', function(){
+      
+        //console.warn('destroying repeat')
+        iterStartElement = null;
+        lastOrder = null
+        unbind();
+      })
 
-      scope.$watch(function ngRepeatWatch(scope){
+      var unbind = scope.$watch(function ngRepeatWatch(scope){
         var index, length,
             collection = scope.$eval(rhs),
             cursor = iterStartElement,     // current position of the node

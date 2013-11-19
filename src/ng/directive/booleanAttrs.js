@@ -295,7 +295,7 @@ forEach(BOOLEAN_ATTR, function(propName, attrName) {
 
 
 // ng-src, ng-href are interpolated
-forEach(['src', 'href'], function(attrName) {
+forEach(['src', 'href', 'poster'], function(attrName) {
   var normalized = directiveNormalize('ng-' + attrName);
   ngAttributeAliasDirectives[normalized] = function() {
     return {
